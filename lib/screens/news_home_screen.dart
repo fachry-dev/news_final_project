@@ -2,26 +2,19 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app_with_getx/controller/news_controller.dart';
 import 'package:news_app_with_getx/screens/news_detail_screen.dart';
+import 'package:news_app_with_getx/screens/news_search_screen.dart';
 
-class NewsScreen extends StatelessWidget {
-  const NewsScreen({super.key});
+class NewsHomeScreen extends StatelessWidget {
+  const NewsHomeScreen({super.key});
 
   Widget categoryButton(String label, String type) {
     final newsController = Get.find<NewsController>();
 
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: newsController.selectedCategory.value == type
-            ? Colors.redAccent
-            : newsController.isTheme.value
-            ? Colors.grey[800]
-            : Colors.white,
+        backgroundColor: Colors.white,
         // The foreground color also depends on the controller's state.
-        foregroundColor: newsController.selectedCategory.value == type
-            ? Colors.white
-            : newsController.isTheme.value
-            ? Colors.white
-            : Colors.redAccent,
+        foregroundColor: Colors.orangeAccent,
         textStyle: TextStyle(
           fontWeight: newsController.selectedCategory.value == type
               ? FontWeight.w800
@@ -46,21 +39,21 @@ class NewsScreen extends StatelessWidget {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                text: 'World',
+                text: 'Kabari',
                 style: TextStyle(
-                  color: newsController.isTheme.value
-                      ? Colors.white
-                      : Colors.black,
+                  color: Colors.black,
                   fontSize: 32,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w800,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
               TextSpan(
-                text: 'Buz',
+                text: 'Feed',
                 style: TextStyle(
-                  color: Colors.redAccent,
+                  color: Colors.orangeAccent,
                   fontSize: 32,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w800,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
             ],
@@ -68,35 +61,16 @@ class NewsScreen extends StatelessWidget {
         ),
         toolbarHeight: 100,
         actions: [
-          Obx(
-            () => IconButton(
-              onPressed: () {
-                newsController.changeTheme();
-              },
-              icon: newsController.isTheme.value
-                  ? Icon(Icons.dark_mode)
-                  : Icon(Icons.light_mode),
-            ),
+          IconButton(
+            onPressed: () {
+              Get.to(NewsSearchScreen());
+            },
+            icon: Icon(Icons.search_rounded),
           ),
         ],
       ),
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsetsGeometry.symmetric(horizontal: 12),
-            child: TextField(
-              controller: newsController.searchController,
-              decoration: InputDecoration(
-                hintText: 'Search News...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-          ),
-
-          SizedBox(height: 20),
-
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Padding(
@@ -147,9 +121,7 @@ class NewsScreen extends StatelessWidget {
                           vertical: 12,
                         ),
                         decoration: BoxDecoration(
-                          color: newsController.isTheme.value
-                              ? Colors.grey[900]
-                              : Colors.white,
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
                           boxShadow: [
                             BoxShadow(
@@ -192,9 +164,7 @@ class NewsScreen extends StatelessWidget {
 
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        color: newsController.isTheme.value
-                                            ? Colors.white
-                                            : Colors.black,
+                                        color: Colors.black,
                                         fontSize: 20,
                                         fontWeight: FontWeight.w700,
                                         height: 1.2,
@@ -211,6 +181,25 @@ class NewsScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
+                            ),
+                            Expanded(
+                              child: Obx(() {
+                                final isBookMarked = newsController.isBookMark(
+                                  item,
+                                );
+                                return IconButton(
+                                  onPressed: () {
+                                    if (isBookMarked) {
+                                      newsController.removeBookMark(item);
+                                    } else {
+                                      newsController.addBookMark(item);
+                                    }
+                                  },
+                                  icon: isBookMarked
+                                      ? Icon(Icons.bookmark_rounded)
+                                      : Icon(Icons.bookmark_border_rounded),
+                                );
+                              }),
                             ),
                           ],
                         ),

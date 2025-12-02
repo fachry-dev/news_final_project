@@ -5,13 +5,14 @@ import 'package:http/http.dart' as http;
 
 class NewsController extends GetxController {
   var url = 'https://berita-indo-api.vercel.app/v1/cnn-news/'.obs;
-  var isTheme = false.obs;
+  // var isTheme = false.obs;
   final searchController = TextEditingController();
   var selectedCategory = 'semua'.obs;
 
   final allNews = <Map<String, dynamic>>[].obs;
   final filteredNews = <Map<String, dynamic>>[].obs;
   var isLoading = false.obs;
+  var bookMark = <Map<String, dynamic>>[].obs;
 
   Future<void> getNews() async {
     isLoading.value = true;
@@ -55,13 +56,27 @@ class NewsController extends GetxController {
     }
   }
 
-  void changeTheme() {
-    isTheme.value = !isTheme.value;
-    if (isTheme.value) {
-      Get.changeTheme(ThemeData.dark());
-    } else {
-      Get.changeTheme(ThemeData.light());
+  // void changeTheme() {
+  //   isTheme.value = !isTheme.value;
+  //   if (isTheme.value) {
+  //     Get.changeTheme(ThemeData.dark());
+  //   } else {
+  //     Get.changeTheme(ThemeData.light());
+  //   }
+  // }
+
+  void addBookMark(Map<String, dynamic> myNews) {
+    if (!bookMark.contains(myNews)) {
+      bookMark.add(myNews);
     }
+  }
+
+  void removeBookMark(Map<String, dynamic> myNews) {
+    bookMark.remove(myNews);
+  }
+
+  bool isBookMark(Map<String, dynamic> myNews) {
+    return bookMark.contains(myNews);
   }
 
   @override

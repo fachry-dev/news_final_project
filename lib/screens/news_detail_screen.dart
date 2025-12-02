@@ -14,16 +14,16 @@ class NewsDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('News Detail'),
         actions: [
-          Obx(
-            () => IconButton(
-              onPressed: () {
-                c.changeTheme();
-              },
-              icon: c.isTheme.value
-                  ? Icon(Icons.dark_mode)
-                  : Icon(Icons.light_mode),
-            ),
-          ),
+          // Obx(
+          //   () => IconButton(
+          //     onPressed: () {
+          //       c.changeTheme();
+          //     },
+          //     icon: c.isTheme.value
+          //         ? Icon(Icons.dark_mode)
+          //         : Icon(Icons.light_mode),
+          //   ),
+          // ),
         ],
       ),
 
