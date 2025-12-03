@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:news_app_with_getx/controller/news_controller.dart';
 import 'package:news_app_with_getx/screens/news_detail_screen.dart';
 
 class NewsBookmarkScreen extends StatelessWidget {
   var newsController = Get.find<NewsController>();
+
+  String formatDate(String date) {
+    DateTime dateTime = DateTime.parse(date);
+    return DateFormat('dd MMM yyyy').format(dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +53,13 @@ class NewsBookmarkScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.deepOrange,
                   ),
-                  child: Text('0 post', style: TextStyle(color: Colors.white)),
+                  child: Obx(() {
+                    final totalPost = newsController.bookMark.length;
+                    return Text(
+                      '$totalPost post${totalPost == 1 ? '' : 's'}',
+                      style: TextStyle(color: Colors.white),
+                    );
+                  }),
                 ),
               ],
             ),
@@ -62,24 +74,118 @@ class NewsBookmarkScreen extends StatelessWidget {
                     ),
                   );
                 }
-                return ListView.builder(
+                return ListView.separated(
                   itemCount: newsController.bookMark.length,
                   itemBuilder: (context, index) {
                     final item = newsController.bookMark[index];
-                    return ListTile(
-                      leading: CircleAvatar(child: Text('1')),
-                      title: Text(item['title']),
-                      subtitle: Text(item['isoDate']),
-                      trailing: IconButton(
-                        onPressed: () {
-                          newsController.removeBookMark(item);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: InkWell(
+                        onTap: () {
+                          Get.to(NewsDetailScreen(newsDetail: item));
                         },
-                        icon: Icon(Icons.delete),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 0,
+                            vertical: 0,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Color(0xff1B1D22),
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0x2020200D),
+                                spreadRadius: 3,
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 120,
+                                width: 140,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(10),
+                                    topLeft: Radius.circular(10),
+                                  ),
+                                  image: DecorationImage(
+                                    image: NetworkImage(item['image']['small']),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 15),
+                              Container(
+                                width: 260,
+                                height: 120,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        item['title'],
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.5,
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.access_time,
+                                          color: Colors.white30,
+                                        ),
+                                        SizedBox(width: 10),
+
+                                        Text(
+                                          formatDate(item['isoDate']),
+                                          style: TextStyle(
+                                            color: Colors.white30,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      onTap: () {
-                        Get.to(NewsDetailScreen(newsDetail: item));
-                      },
                     );
+                    // ListTile(
+                    //   leading: CircleAvatar(child: Text('1')),
+                    //   title: Text(item['title']),
+                    //   subtitle: Text(item['isoDate']),
+                    //   trailing: IconButton(
+                    //     onPressed: () {
+                    //       newsController.removeBookMark(item);
+                    //     },
+                    //     icon: Icon(Icons.delete),
+                    //   ),
+                    //   onTap: () {
+                    //     Get.to(NewsDetailScreen(newsDetail: item));
+                    //   },
+                    // );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(height: 20);
                   },
                 );
               }),

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app_with_getx/controller/news_controller.dart';
 import 'package:news_app_with_getx/screens/news_bookmark_screen.dart';
@@ -31,6 +32,11 @@ class NewsSearchScreen extends StatelessWidget {
       },
       child: Text(label),
     );
+  }
+
+  String formatDate(String date) {
+    DateTime dateTime = DateTime.parse(date);
+    return DateFormat('dd MMM yyyy').format(dateTime);
   }
 
   @override
@@ -86,7 +92,7 @@ class NewsSearchScreen extends StatelessWidget {
                 hintText: 'Search News...',
                 hintStyle: TextStyle(color: Colors.white38),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
             ),
@@ -174,59 +180,75 @@ class NewsSearchScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 20),
-                            Container(
-                              width: 260,
-                              height: 160,
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      item['title'],
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w600,
-                                        height: 1.5,
+                            SizedBox(width: 15),
+                            Expanded(
+                              child: Container(
+                                width: 260,
+                                height: 160,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        item['title'],
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.5,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Text(
-                                    item['isoDate'],
-                                    style: TextStyle(
-                                      color: Colors.white30,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.access_time,
+                                          color: Colors.white30,
+                                        ),
+                                        SizedBox(width: 10),
+
+                                        Text(
+                                          formatDate(item['isoDate']),
+                                          style: TextStyle(
+                                            color: Colors.white30,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                            Expanded(
-                              child: Obx(() {
-                                final isBookMarked = newsController.isBookMark(
-                                  item,
-                                );
-                                return IconButton(
-                                  onPressed: () {
-                                    if (isBookMarked) {
-                                      newsController.removeBookMark(item);
-                                    } else {
-                                      newsController.addBookMark(item);
-                                    }
-                                  },
-                                  icon: isBookMarked
-                                      ? Icon(Icons.bookmark_rounded)
-                                      : Icon(Icons.bookmark_border_rounded),
-                                );
-                              }),
-                            ),
+                            Obx(() {
+                              final isBookMarked = newsController.isBookMark(
+                                item,
+                              );
+                              return IconButton(
+                                onPressed: () {
+                                  if (isBookMarked) {
+                                    newsController.removeBookMark(item);
+                                  } else {
+                                    newsController.addBookMark(item);
+                                  }
+                                },
+                                icon: isBookMarked
+                                    ? Icon(
+                                        Icons.bookmark_rounded,
+                                        color: Colors.white,
+                                      )
+                                    : Icon(
+                                        Icons.bookmark_border_rounded,
+                                        color: Colors.white30,
+                                      ),
+                              );
+                            }),
                           ],
                         ),
                       ),
